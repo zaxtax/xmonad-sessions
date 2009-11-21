@@ -1,2 +1,57 @@
+h1. xmonad-sessions
+
 xmonad-sessions is a way to use xmonad to control which of your applications 
 persist and are easily restored.
+
+h2. Installing
+
+place ViewDoc.hs into ~/.xmonad/lib/
+
+<pre><code>
+$ cp ViewDoc.hs ~/.xmonad/lib
+</code></pre>
+
+compile saveDocument and loadDocuments and place in path
+
+<pre><code>
+$ ghc --make saveDocument
+$ ghc --make loadDocuments
+$ mv saveDocument loadDocuments /home/user/bin
+</code></pre>
+
+symlink all applications you want session saved
+<pre><code>
+$ ln -s /usr/bin/gv /home/user/bin/gv
+$ ln -s /usr/bin/evince /home/user/bin/evince
+</code></pre>
+
+modify xmonad.hs
+
+<pre><code>
+import ViewDoc
+
+myLogHook :: X ()
+myLogHook = do ewmhDesktopsLogHook
+               colorSaved
+
+mykeys (XConfig {modMask = modm}) = M.fromList $
+   [  ((modm, xK_s), toggleSaveState)
+   ,  ((modm .|. shiftMask, xK_s), spawn "/path/to/loadDocuments")
+   ]
+
+main = xmonad $ defaultConfig 
+       { loghook = myLogHook
+       , keys    = (\c -> mykeys c `M.union` keys defaultConfig c)
+       }
+</code></pre>
+
+
+
+h2. Using
+
+If you want to save any window focus over it and M-s.
+M-s again will untoggle it
+
+To restore all previous windows saved M-S
+
+All applications that have been wrapped with saveDocument will be restorable
