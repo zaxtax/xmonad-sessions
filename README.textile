@@ -28,6 +28,7 @@ $ ln -s /usr/bin/evince /home/user/bin/evince
 modify xmonad.hs
 
 <pre><code>
+import XMonad
 import qualified Data.Map as M
 import ViewDoc
 
