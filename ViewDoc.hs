@@ -16,9 +16,11 @@ import XMonad.Operations
 history :: String
 history = ".viewedDocs"
 
-data Storage = Storage (S.Set ProcessID) deriving Typeable
+data Storage = Storage (S.Set ProcessID) deriving (Typeable,Read,Show)
 instance ExtensionClass Storage where
    initialValue = Storage S.empty
+   extensionType = PersistentExtension
+
 unStorage (Storage s) = s
 
 toggleSaveState :: X ()

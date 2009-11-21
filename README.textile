@@ -51,9 +51,9 @@ main = xmonad $ defaultConfig
 
 h2. Using
 
-If you want to save any window focus over it and M-s.
-M-s again will untoggle it
+If you want to save any window focus over it and Mod-s.
+Mod-s again will untoggle it
 
-To restore all previous windows saved M-S
+To restore all previous windows saved Mod-S
 
 All applications that have been wrapped with saveDocument will be restorable
