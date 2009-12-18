@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -XPatternGuards -XFlexibleContexts #-}
 {-# LANGUAGE DeriveDataTypeable #-}
-module ViewDoc (toggleSaveState, colorSaved) where
+module ViewDoc (toggleSaveState, colorSaved, launchDocuments) where
 
 import Control.Monad
 import qualified Data.ByteString.Char8 as Str
@@ -12,6 +12,11 @@ import XMonad
 import XMonad.Core
 import XMonad.Hooks.ManageHelpers
 import XMonad.Operations
+
+import System.Posix.Process
+import System.Directory
+import System.Path
+import Data.Maybe
 
 history :: String
 history = ".viewedDocs"
@@ -67,3 +72,24 @@ colorSaved = withFocused (runQuery pid >=> colorSaved')
           case S.member p (unStorage pids) of
             True -> withFocused $ \w -> setWindowBorder' "blue" w
             False -> return ()
+
+launchDocuments :: X ()
+launchDocuments = do
+  home <- io $ getHomeDirectory
+  f <- io $ Str.readFile (fromJust $ absNormPath home history)
+  g <- mapM launchFile (lines $ Str.unpack f)
+  io $ writeFile history (unlines g)
+
+launchFile :: String -> X String
+launchFile "" = return ""
+launchFile f  = launchFile' (read f)
+  where launchFile' :: [String] -> X String
+        launchFile' [cmd,args,pid,flag] 
+            | read flag == True = do 
+                pid <- io $ launch cmd [args]
+                colorWindows pid True
+                return $ show [cmd,args,show pid,flag]
+            | otherwise = return $ show [cmd,args,pid,flag]
+        launchFile' l = return $ show l
+
+launch prog args = forkProcess $ executeFile ("/usr/bin/" ++ prog) True args Nothing
