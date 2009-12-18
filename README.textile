@@ -15,8 +15,7 @@ compile saveDocument and loadDocuments and place in path
 
 <pre><code>
 $ ghc --make saveDocument
-$ ghc --make loadDocuments
-$ mv saveDocument loadDocuments /home/user/bin
+$ mv saveDocument /home/user/bin
 </code></pre>
 
 symlink all applications you want session saved
@@ -38,7 +37,7 @@ myLogHook = do ewmhDesktopsLogHook
 
 mykeys (XConfig {modMask = modm}) = M.fromList $
    [  ((modm, xK_s), toggleSaveState)
-   ,  ((modm .|. shiftMask, xK_s), spawn "/path/to/loadDocuments")
+   ,  ((modm .|. shiftMask, xK_s), launchDocuments)
    ]
 
 main = xmonad $ defaultConfig 
