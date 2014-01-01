@@ -20,8 +20,8 @@ $ mv saveDocument /home/user/bin
 
 symlink all applications you want session saved
 <pre><code>
-$ ln -s /usr/bin/gv /home/user/bin/gv
-$ ln -s /usr/bin/evince /home/user/bin/evince
+$ ln -s /usr/user/bin/saveDocument /home/user/bin/gv
+$ ln -s /usr/user/bin/saveDocument /home/user/bin/evince
 </code></pre>
 
 modify xmonad.hs
