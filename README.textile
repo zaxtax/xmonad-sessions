@@ -5,26 +5,32 @@ persist and are easily restored.
 
 h2. Installing
 
-place ViewDoc.hs into ~/.xmonad/lib/
-
 <pre><code>
+$ mkdir -p ~/github
+$ cd ~/github
+$ git clone https://github.com/zaxtax/xmonad-sessions
+$ cd xmonad-sessions
+$ cabal update
+$ cabal install MissingH
+$ mkdir -p ~/.xmonad/lib
 $ cp ViewDoc.hs ~/.xmonad/lib
 </code></pre>
 
-compile saveDocument and loadDocuments and place in path
+Compile <var>saveDocument.hs</var> and *<var>`loadDocuments.hs(???)</var>* and place them `*PATH*`:
 
 <pre><code>
 $ ghc --make saveDocument
-$ mv saveDocument /home/user/bin
+$ mv saveDocument ~/bin
 </code></pre>
 
-symlink all applications you want session saved
+Symlink all applications you want session saved:
+
 <pre><code>
-$ ln -s /usr/user/bin/saveDocument /home/user/bin/gv
-$ ln -s /usr/user/bin/saveDocument /home/user/bin/evince
+$ ln -s ~/bin/saveDocument ~/bin/gv
+$ ln -s ~/bin/saveDocument ~/bin/evince
 </code></pre>
 
-modify xmonad.hs
+Modify `~/.xmonad/xmonad.hs`
 
 <pre><code>
 import XMonad
