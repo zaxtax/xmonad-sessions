@@ -1,32 +1,32 @@
-h1. xmonad-sessions
+# xmonad-sessions
 
 xmonad-sessions is a way to use xmonad to control which of your applications 
 persist and are easily restored.
 
-h2. Installing
+## Installing
 
 place ViewDoc.hs into ~/.xmonad/lib/
 
-<pre><code>
+````bash
 $ cp ViewDoc.hs ~/.xmonad/lib
-</code></pre>
+````
 
 compile saveDocument and loadDocuments and place in path
 
-<pre><code>
+````bash
 $ ghc --make saveDocument
 $ mv saveDocument /home/user/bin
-</code></pre>
+````
 
 symlink all applications you want session saved
-<pre><code>
+````bash
 $ ln -s /usr/user/bin/saveDocument /home/user/bin/gv
 $ ln -s /usr/user/bin/saveDocument /home/user/bin/evince
-</code></pre>
+````
 
 modify xmonad.hs
 
-<pre><code>
+````haskell
 import XMonad
 import qualified Data.Map as M
 import ViewDoc
@@ -44,11 +44,11 @@ main = xmonad $ defaultConfig
        { loghook = myLogHook
        , keys    = (\c -> mykeys c `M.union` keys defaultConfig c)
        }
-</code></pre>
+````
 
 
 
-h2. Using
+## Using
 
 If you want to save any window focus over it and Mod-s.
 Mod-s again will untoggle it
