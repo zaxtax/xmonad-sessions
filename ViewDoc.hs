@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -XPatternGuards -XFlexibleContexts #-}
 {-# LANGUAGE DeriveDataTypeable #-}
-module ViewDoc (toggleSaveState, colorSaved, launchDocuments) where
+module ViewDoc (toggleSaveState, colorSaved, launchDocuments, saveStateAs) where
 
 import Control.Monad
 import qualified Data.ByteString.Char8 as Str
@@ -8,18 +8,27 @@ import XMonad.Util.ExtensibleState as XS
 import qualified Data.Set as S 
 
 import System.Posix.Types
-import XMonad
+import XMonad hiding (launch)
 import XMonad.Core
 import XMonad.Hooks.ManageHelpers
 import XMonad.Operations
+import XMonad.Actions.SpawnOn
 
+import XMonad.Prompt
+import XMonad.Prompt.Input
+
+import System.FilePath.Posix
 import System.Posix.Process
+import System.Posix.Files
 import System.Directory
-import System.Path
+--import System.Path
 import Data.Maybe
 
 history :: String
 history = ".viewedDocs"
+
+histdir :: String
+histdir = ".xdocs"
 
 data Storage = Storage (S.Set ProcessID) deriving (Typeable,Read,Show)
 instance ExtensionClass Storage where
@@ -76,7 +85,7 @@ colorSaved = withFocused (runQuery pid >=> colorSaved')
 launchDocuments :: X ()
 launchDocuments = do
   home <- io $ getHomeDirectory
-  f <- io $ Str.readFile (fromJust $ absNormPath home history)
+  f <- io $ Str.readFile (home </> history)
   g <- mapM launchFile (lines $ Str.unpack f)
   io $ writeFile history (unlines g)
 
@@ -93,3 +102,26 @@ launchFile f  = launchFile' (read f)
         launchFile' l = return $ show l
 
 launch prog args = forkProcess $ executeFile ("/usr/bin/" ++ prog) True args Nothing
+
+saveStateAs :: X ()
+saveStateAs = do
+  curState <- io $ findDefault
+  inputPromptWithCompl def ("Session " ++ parens curState) loadStates ?+ (io . changeSession)
+  where loadStates s = do 
+          home <- getHomeDirectory
+          states <- getDirectoryContents (home </> histdir)
+          mkComplFunFromList' states s
+        findDefault = do
+          home <- getHomeDirectory
+          curState <- readSymbolicLink (home </> history)
+          return $ takeFileName curState
+        parens s = "(" ++ s ++ ")"
+        brackets s = "[" ++ s ++ "]"
+
+changeSession :: FilePath -> IO ()
+changeSession new = do
+  home <- getHomeDirectory
+  createDirectoryIfMissing True (home </> histdir)
+  appendFile (home </> histdir </> new) ""
+  removeLink (home </> history)
+  createSymbolicLink (home </> histdir </> new) (home </> history)
