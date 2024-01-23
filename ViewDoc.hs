@@ -9,10 +9,10 @@ import qualified Data.Set as S
 
 import System.Posix.Types
 import XMonad hiding (launch)
-import XMonad.Core
+--import XMonad.Core
 import XMonad.Hooks.ManageHelpers
-import XMonad.Operations
-import XMonad.Actions.SpawnOn
+--import XMonad.Operations
+--import XMonad.Actions.SpawnOn
 
 import XMonad.Prompt
 import XMonad.Prompt.Input
@@ -22,7 +22,7 @@ import System.Posix.Process
 import System.Posix.Files
 import System.Directory
 --import System.Path
-import Data.Maybe
+--import Data.Maybe
 
 history :: String
 history = ".viewedDocs"
@@ -110,7 +110,7 @@ saveStateAs = do
   where loadStates s = do 
           home <- getHomeDirectory
           states <- getDirectoryContents (home </> histdir)
-          mkComplFunFromList' states s
+          mkComplFunFromList' def states s
         findDefault = do
           home <- getHomeDirectory
           curState <- readSymbolicLink (home </> history)
